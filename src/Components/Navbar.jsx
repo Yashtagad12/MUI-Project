@@ -57,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function Navbar() {
+export default function Navbar({ onMenuClick }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -164,6 +164,10 @@ export default function Navbar() {
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
+                        onClick={(event) => {
+                            event.currentTarget.blur();
+                            onMenuClick();
+                        }}
                         sx={{ mr: 2 }}
                     >
                         <MenuIcon />
