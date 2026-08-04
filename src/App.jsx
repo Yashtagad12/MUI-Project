@@ -3,7 +3,7 @@ import './App.css'
 import Navbar from './Components/Navbar';
 import Sidebar from './Components/Sidebar';
 import { Route, Routes } from 'react-router';
-
+import MainLayout from './Layouts/MainLayout';
 
 const App = () => {
 
@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/portfolio" element={<div>Portfolio</div>} />
           <Route path="/faq" element={<div>FAQ</div>} />
         </Routes>
-      </MainLayout >
+      </MainLayout>
     </>
   )
 }
