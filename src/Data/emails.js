@@ -1,7 +1,5 @@
 export const emails = [
-
     {
-
         id: 1,
         folder: 'inbox',
         from: 'Alice Johnson',
@@ -28,5 +26,6 @@ export const emails = [
         date: '2026-08-01',
         starred: false,
     },
-
 ];
+
+export default emails;
