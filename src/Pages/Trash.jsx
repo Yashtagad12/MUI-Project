@@ -7,7 +7,7 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-export default function Trashed({ searchTerm }) {
+const Trashed = ({ searchTerm }) => {
     const trashedEmails = emails.filter(email => email.trashed === true);
 
 
@@ -56,3 +56,5 @@ export default function Trashed({ searchTerm }) {
     );
 
 };
+
+export default Trashed;
