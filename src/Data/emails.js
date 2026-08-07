@@ -26,6 +26,15 @@ export const emails = [
         date: '2026-08-01',
         starred: false,
     },
+    {
+        id: 4,
+        folder: 'spam',
+        from: 'John Doe',
+        subject: 'You won a prize!',
+        body: 'Congratulations! You have won a prize! Click here to claim it.',
+        date: '2026-08-03',
+        starred: false,
+    },
 ];
 
 export default emails;
