@@ -8,7 +8,7 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-export default function Starred({ searchTerm }) {
+const Starred = ({ searchTerm }) => {
     const starredEmails = emails.filter(email => email.starred === true);
 
 
@@ -57,3 +57,5 @@ export default function Starred({ searchTerm }) {
     );
 
 };
+
+export default Starred;
