@@ -8,7 +8,7 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-export default function Inbox({ searchTerm }) {
+const Inbox = ({ searchTerm }) => {
 
     const inboxEmails = useMemo(() =>
         emails.filter(email => email.folder === 'inbox'), []
@@ -59,3 +59,5 @@ export default function Inbox({ searchTerm }) {
     );
 
 };
+
+export default Inbox;
