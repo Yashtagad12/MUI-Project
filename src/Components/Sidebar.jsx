@@ -9,6 +9,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Import Material Icons
 import AddIcon from '@mui/icons-material/Add';
@@ -17,6 +18,7 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
 import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import MailIcon from '@mui/icons-material/Mail'; // for fallback icon
 
 export default function Sidebar({ open, onClose, variant = 'temporary' }) {
@@ -25,7 +27,6 @@ export default function Sidebar({ open, onClose, variant = 'temporary' }) {
     { text: 'Compose', icon: <AddIcon />, to: '/compose' },
     { text: 'Inbox', icon: <InboxIcon />, to: '/inbox' },
     { text: 'Sent', icon: <SendIcon />, to: '/sent' },
-    { text: 'Drafts', icon: <DraftsIcon />, to: '/drafts' },
     { text: 'Starred', icon: <StarIcon />, to: '/starred' },
     { text: 'Trash', icon: <DeleteIcon />, to: '/trash' },
   ];
@@ -45,14 +46,24 @@ export default function Sidebar({ open, onClose, variant = 'temporary' }) {
       <Divider />
       <List>
         {/* Additional items if needed */}
-        <ListItem disablePadding>
-          <ListItemButton component={RouterLink} to="/spam">
+        <ListItem disablePadding sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <ListItemButton component={Link} to="/spam">
             <ListItemIcon><MailIcon /></ListItemIcon>
             <ListItemText primary="Spam" />
           </ListItemButton>
+          <ListItemButton
+            component={RouterLink}
+            to="/drafts"
+          >
+            <ListItemIcon>
+              <DraftsOutlinedIcon />
+            </ListItemIcon>
+
+            <ListItemText primary="Drafts" />
+          </ListItemButton>
         </ListItem>
       </List>
-    </Box>
+    </Box >
   );
 
   return (
