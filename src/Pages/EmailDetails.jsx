@@ -5,7 +5,7 @@ import { emails } from '../Data/emails';
 
 
 
-export default function EmailDetails() {
+const EmailDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -43,3 +43,5 @@ export default function EmailDetails() {
         </Box >
     );
 };
+
+export default EmailDetails;
