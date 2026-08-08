@@ -8,7 +8,7 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-export default function Sent({ searchTerm }) {
+const Sent = ({ searchTerm }) => {
     const sentEmails = emails.filter(email => email.folder === 'sent');
 
 
@@ -57,3 +57,5 @@ export default function Sent({ searchTerm }) {
     );
 
 };
+
+export default Sent;
