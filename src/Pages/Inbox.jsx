@@ -7,7 +7,6 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-
 const Inbox = ({ searchTerm }) => {
 
     const inboxEmails = useMemo(() =>
