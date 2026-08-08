@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Box, TextField, Button } from '@mui/material';
+import { emails } from '../Data/emails';
 
 
-export default function Compose() {
+const Compose = ({ onSaveDraft, onSend, draft }) => {
 
-    const navigate = useNavigate();
-    const location = useLocation();
-    const Params = new URLSearchParams(window.location.search);
-    const replyId = Params.get('reply');
-    const forwardId = Params.get('forward');
 
-    const [to, setTo] = useState('');
-    const [subject, setSubject] = useState(replyId ? 'Re: ' : forwardId ? 'Fwd:' : '');
-    const [body, setBody] = useState('');
+    const [email, setEmail] = React.useState({
+        id: Date.now(),
+        to: '',
+        subject: '',
+        body: '',
+    });
+
+    React.useEffect(() => {
+        if (draft) {
+            setEmail(draft);
+        }
+    }, [draft]);
+
+    const handleChange = (event) => {
+
+        const { name, value } = event.target;
+
+        setEmail((previousEmail) => ({
+            ...previousEmail,
+            [name]: value,
+        }));
+    };
 
     const handleSend = () => {
         // Here you would typically send the email data to your backend or API
@@ -24,20 +38,34 @@ export default function Compose() {
     return (
         <Box>
             <TextField
-                fullWidth label="To" value={to} onChange={e => setTo(e.target.value)}
+                fullWidth
+                label="To"
+                name="to"
+                value={email.to}
+                onChange={handleChange}
                 sx={{ mb: 2 }}
             />
             <TextField
-                fullWidth label="Subject" value={subject} onChange={e =>
-                    setSubject(e.target.value)} sx={{ mb: 2 }}
+                fullWidth label="Subject" value={email.subject} onChange={handleChange}
+                sx={{ mb: 2 }}
             />
             <TextField
-                fullWidth multiline rows={10} label="Body" value={body}
-                onChange={e => setBody(e.target.value)}
+                fullWidth
+                multiline
+                rows={10}
+                label="Body"
+                name="body"
+                value={email.body}
+                onChange={handleChange}
                 variant="outlined"
             />
             <Box sx={{ mt: 2 }}>
-                <Button variant="contained" color="primary" onClick={handleSend}>
+                <Button
+                    onClick={() => onSaveDraft(email)}
+                >
+                    Save Draft
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => onSend(email)}>
                     Send
                 </Button>
             </Box>
@@ -45,3 +73,5 @@ export default function Compose() {
         </Box>
     )
 };
+
+export default Compose;
