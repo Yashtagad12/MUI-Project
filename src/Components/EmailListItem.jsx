@@ -2,7 +2,7 @@ import React from 'react';
 import { ListItem, ListItemAvatar, ListItemText, Avatar, ListItemButton } from '@mui/material';
 
 
-export default function EmailListItem({ email, onClick }) {
+const EmailListItem = ({ email, onClick }) => {
 
     return (
         <ListItem disablePadding>
@@ -32,3 +32,5 @@ export default function EmailListItem({ email, onClick }) {
         </ListItem>
     );
 };
+
+export default EmailListItem;
