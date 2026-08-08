@@ -10,12 +10,58 @@ import Starred from './Pages/Starred';
 import Trash from './Pages/Trash';
 import EmailDetails from './Pages/EmailDetails';
 import Compose from './Pages/Compose';
-
-
+import Spam from './Pages/Spam';
+import Drafts from './Pages/Drafts';
 
 const App = () => {
 
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+  const [drafts, setDrafts] = React.useState([]);
+  const [sentEmails, setSentEmails] = React.useState([]);
+
+  const [composeOpen, setComposeOpen] = React.useState(false);
+  const [selectedDraft, setSelectedDraft] = React.useState(null);
+
+  const saveDraft = (email) => {
+    setDrafts((previousDrafts) => {
+
+      const alreadyExists = previousDrafts.some(
+        (draft) => draft.id === email.id
+      );
+
+      if (alreadyExists) {
+        return previousDrafts.map((draft) =>
+          draft.id === email.id ? email : draft
+        );
+      }
+
+      return [...previousDrafts, email];
+    });
+  };
+
+  const sendEmail = (email) => {
+
+    setSentEmails((previousSent) => [
+      ...previousSent,
+      {
+        ...email,
+        sentAt: new Date().toISOString(),
+      },
+    ]);
+
+    // Remove email from Drafts after sending
+    setDrafts((previousDrafts) =>
+      previousDrafts.filter(
+        (draft) => draft.id !== email.id
+      )
+    );
+  };
+
+  const handleOpenDraft = (draft) => {
+    setSelectedDraft(draft);
+    setComposeOpen(true);
+  };
 
   return (
     <>
@@ -26,9 +72,10 @@ const App = () => {
           <Route path="/sent" element={<Sent />} />
           <Route path="/starred" element={<Starred />} />
           <Route path="/trash" element={<Trash />} />
-          <Route path="/compose" element={<Compose />} />
+          <Route path="/compose" element={<Compose open={composeOpen} onClose={() => setComposeOpen(false)} onSaveDraft={saveDraft} onSend={sendEmail} draft={selectedDraft} />} />
+          <Route path="/spam" element={<Spam />} />
           <Route path="/email/:id" element={<EmailDetails />} />
-
+          <Route path="/drafts" element={<Drafts drafts={drafts} onOpenDraft={handleOpenDraft} />} />
         </Routes>
       </MainLayout>
     </>
