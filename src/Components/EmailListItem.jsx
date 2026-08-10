@@ -9,6 +9,7 @@ const EmailListItem = ({ email, onClick }) => {
             <ListItemButton
                 alignItems="flex-start"
                 onClick={() => onClick(email)}
+
             >
                 <ListItemAvatar>
                     <Avatar>
