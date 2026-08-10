@@ -5,8 +5,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
-export default function ToolbarActions({ onRefresh }) {
-    
+const ToolbarActions = ({ onRefresh }) => {
+
     return (
         <Box>
             <IconButton color="primary" onClick={onRefresh}>
@@ -17,4 +17,6 @@ export default function ToolbarActions({ onRefresh }) {
             </IconButton>
         </Box >
     )
-}
+};
+
+export default ToolbarActions;
