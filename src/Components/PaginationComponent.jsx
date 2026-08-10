@@ -3,7 +3,7 @@ import { Pagination } from '@mui/material';
 
 
 
-export default function PaginationComponent({ page, count, onChange }) {
+const PaginationComponent = ({ page, count, onChange }) => {
 
     return (
         <Pagination
@@ -14,3 +14,5 @@ export default function PaginationComponent({ page, count, onChange }) {
         />
     );
 };
+
+export default PaginationComponent;
