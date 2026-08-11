@@ -18,6 +18,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import MailIcon from '@mui/icons-material/Mail';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import Tooltip from '@mui/material/Tooltip';
 
 // Styled search components (as in original code)
 const Search = styled('div')(({ theme }) => ({
@@ -51,7 +52,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function Navbar({ onMenuClick, onSearch }) {
+export default function Navbar({
+    onMenuClick,
+    onSearch,
+    unreadCount,
+    draftCount,
+    starredCount,
+    isMobile,
+}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -64,25 +72,29 @@ export default function Navbar({ onMenuClick, onSearch }) {
     const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ width: '100%' }}>
             <AppBar position="static" sx={{
                 background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 50%, #9333EA 100%)',
             }}>
                 <Toolbar>
                     {/* Hamburger / Menu Button */}
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                        onClick={(event) => {
-                            event.currentTarget.blur();
-                            onMenuClick();
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    {isMobile && (
+                        <Tooltip title="Open sidebar">
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                                onClick={(event) => {
+                                    event.currentTarget.blur();
+                                    onMenuClick();
+                                }}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
 
                     {/* Title or Logo */}
                     <Typography
@@ -112,61 +124,73 @@ export default function Navbar({ onMenuClick, onSearch }) {
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
                         {/* Compose / Mail */}
-                        <IconButton
-                            size="large"
-                            aria-label="compose email"
-                            color="inherit"
-                        >
-                            <Badge color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
+                        <Tooltip title="Compose email">
+                            <IconButton
+                                size="large"
+                                aria-label="compose email"
+                                color="inherit"
+                            >
+                                <Badge color="error">
+                                    <MailIcon />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Drafts */}
-                        <IconButton
-                            size="large"
-                            aria-label="draft emails"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={3} color="error">
-                                <DraftsOutlinedIcon />
-                            </Badge>
-                        </IconButton>
+                        <Tooltip title="Drafts">
+                            <IconButton
+                                size="large"
+                                aria-label="draft emails"
+                                color="inherit"
+                            >
+                                <Badge badgeContent={draftCount} color="error">
+                                    <DraftsOutlinedIcon />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Starred Emails */}
-                        <IconButton
-                            size="large"
-                            aria-label="starred emails"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={5} color="error">
-                                <StarBorderIcon />
-                            </Badge>
-                        </IconButton>
+                        <Tooltip title="Starred emails">
+                            <IconButton
+                                size="large"
+                                aria-label="starred emails"
+                                color="inherit"
+                            >
+                                <Badge badgeContent={starredCount} color="error">
+                                    <StarBorderIcon />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Notifications */}
-                        <IconButton
-                            size="large"
-                            aria-label="email notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={4} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        <Tooltip title="Notifications">
+                            <IconButton
+                                size="large"
+                                aria-label="email notifications"
+                                color="inherit"
+                            >
+                                <Badge badgeContent={unreadCount} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+
+
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Profile */}
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls="primary-search-account-menu"
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
+                        <Tooltip title="Account">
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls="primary-search-account-menu"
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
 
                     {/* Mobile menu icon */}
