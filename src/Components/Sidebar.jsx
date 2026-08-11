@@ -21,59 +21,120 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import MailIcon from '@mui/icons-material/Mail'; // for fallback icon
 
-export default function Sidebar({ open, onClose, variant = 'temporary' }) {
-  // Menu items configuration
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+
+
+const Sidebar = ({
+  open,
+  onClose,
+  variant = 'permanent',
+}) => {
+
   const menuItems = [
-    { text: 'Compose', icon: <AddIcon />, to: '/compose' },
-    { text: 'Inbox', icon: <InboxIcon />, to: '/inbox' },
-    { text: 'Sent', icon: <SendIcon />, to: '/sent' },
-    { text: 'Starred', icon: <StarIcon />, to: '/starred' },
-    { text: 'Trash', icon: <DeleteIcon />, to: '/trash' },
+    {
+      text: 'Inbox',
+      icon: <InboxIcon />,
+      path: '/',
+    },
+    {
+      text: 'Starred',
+      icon: <StarBorderIcon />,
+      path: '/starred',
+    },
+    {
+      text: 'Drafts',
+      icon: <DraftsOutlinedIcon />,
+      path: '/drafts',
+    },
+    {
+      text: 'Sent',
+      icon: <SendOutlinedIcon />,
+      path: '/sent',
+    },
+    {
+      text: 'Trash',
+      icon: <DeleteIcon />,
+      path: '/trash',
+    },
   ];
 
-  const drawerContent = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={onClose}>
-      <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton component={RouterLink} to={item.to}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {/* Additional items if needed */}
-        <ListItem disablePadding sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <ListItemButton component={Link} to="/spam">
-            <ListItemIcon><MailIcon /></ListItemIcon>
-            <ListItemText primary="Spam" />
-          </ListItemButton>
-          <ListItemButton
-            component={RouterLink}
-            to="/drafts"
-          >
-            <ListItemIcon>
-              <DraftsOutlinedIcon />
-            </ListItemIcon>
+  const sidebarContent = (
+    <Box
+      sx={{
+        width: 260,
+        height: '100%',
+      }}
+    >
 
-            <ListItemText primary="Drafts" />
-          </ListItemButton>
-        </ListItem>
+      <List sx={{ pt: 2 }}>
+
+        {menuItems.map((item) => (
+
+          <ListItem
+            key={item.text}
+            disablePadding
+          >
+
+            <ListItemButton
+              component={Link}
+              to={item.path}
+              onClick={
+                variant === 'temporary'
+                  ? onClose
+                  : undefined
+              }
+            >
+
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+
+              <ListItemText
+                primary={item.text}
+              />
+
+            </ListItemButton>
+
+          </ListItem>
+
+        ))}
+
       </List>
-    </Box >
+
+      <Divider />
+
+    </Box>
   );
 
   return (
+
     <Drawer
       variant={variant}
       open={open}
       onClose={onClose}
-      ModalProps={{ keepMounted: true }}  // improve mobile performance
+      ModalProps={{
+        keepMounted: true,
+      }}
+      sx={{
+        width: 260,
+        flexShrink: 0,
+
+        '& .MuiDrawer-paper': {
+          width: 260,
+          boxSizing: 'border-box',
+
+          ...(variant === 'permanent' && {
+            position: 'relative',
+            height: '100vh',
+          }),
+        },
+      }}
     >
-      {drawerContent}
+      {sidebarContent}
     </Drawer>
+
   );
-}
+};
+
+export default Sidebar;
