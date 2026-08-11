@@ -12,6 +12,7 @@ import EmailDetails from './Pages/EmailDetails';
 import Compose from './Pages/Compose';
 import Spam from './Pages/Spam';
 import Drafts from './Pages/Drafts';
+import { emails } from './data/emails';
 
 const App = () => {
 
@@ -62,6 +63,12 @@ const App = () => {
     setSelectedDraft(draft);
     setComposeOpen(true);
   };
+
+  const unreadCount = emails.filter((email) => !email.read).length;
+
+  const draftCount = drafts.length;
+
+  const starredCount = emails.filter((email) => email.starred).length;
 
   return (
     <>
