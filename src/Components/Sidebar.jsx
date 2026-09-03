@@ -48,6 +48,11 @@ const Sidebar = ({
       path: '/drafts',
     },
     {
+      text: 'Compose',
+      icon: <AddIcon />,
+      path: '/compose',
+    },
+    {
       text: 'Sent',
       icon: <SendOutlinedIcon />,
       path: '/sent',
