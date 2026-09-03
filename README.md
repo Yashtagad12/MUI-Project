@@ -1,6 +1,6 @@
 # 📧 MyMail MUI — React Email Client
 
-<!-- ![MyMail MUI Banner](./src/assets/banner.png) -->
+![MyMail MUI Banner](./src/assets/Screenshots/banner.png)
 
 **A full-featured email client UI built with React and Material-UI (MUI)**
 
@@ -91,39 +91,41 @@ Shared state (`emails`, `drafts`, `sentEmails`) lives in `App.jsx` and flows dow
 
 ## 📸 Screenshots
 
-<!-- ### 📥 Inbox (Desktop) -->
-<!-- ![Inbox Desktop](./src/assets/screenshots/inbox-desktop.png) -->
+### 📥 Inbox (Desktop)
 
-<!-- ### 📱 Sidebar Drawer (Mobile) -->
-<!-- ![Mobile Drawer](./src/assets/screenshots/mobile-drawer.png) -->
+![Inbox Desktop](./src/assets/Screenshots/inbox.png)
 
-<!-- ### ✍️ Compose Dialog -->
-<!-- ![Compose Dialog](./src/assets/screenshots/compose.png) -->
+### 📱 Sidebar Drawer (Mobile)
 
-<!-- ### 📝 Drafts List -->
-<!-- ![Drafts List](./src/assets/screenshots/drafts.png) -->
+![Mobile Drawer](./src/assets/Screenshots/sidebar-drawer.png)
 
-_Screenshots coming soon._
+### ✍️ Compose Dialog
+
+![Compose Dialog](./src/assets/Screenshots/compose.png)
+
+### 📝 Drafts List
+
+![Drafts List](./src/assets/Screenshots/drafts.png)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology                         | Version           | Purpose                                                             |
-| ---------------------------------- | ----------------- | ------------------------------------------------------------------- |
-| **React**                          | 18+ (recommended) | Core UI library — functional components & hooks                     |
-| **React Router**                   | v6+               | Declarative client-side routing                                     |
-| **Material-UI (MUI)**              | v6+ / v7+         | Component library & theming (AppBar, Drawer, List, TextField, etc.) |
-| **Node.js**                        | ≥14.x             | Development server & build process                                  |
-| **npm / Yarn**                     | —                 | Package management                                                  |
-| **ESLint / Prettier** _(optional)_ | —                 | Linting and code formatting                                         |
+| Technology            | Version           | Purpose                                                             |
+| --------------------- | ----------------- | ------------------------------------------------------------------- |
+| **React**             | 18+ (recommended) | Core UI library — functional components & hooks                     |
+| **React Router**      | v6+               | Declarative client-side routing                                     |
+| **Material-UI (MUI)** | v6+ / v7+         | Component library & theming (AppBar, Drawer, List, TextField, etc.) |
+| **Node.js**           | ≥14.x             | Development server & build process                                  |
+| **npm / Yarn**        | —                 | Package management                                                  |
+| **ESLint / Prettier** | —                 | Linting and code formatting                                         |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-MyMail/
+Material-UI-project/
 ├── public/
 │   └── index.html
 │
@@ -146,7 +148,7 @@ MyMail/
 │   ├── App.jsx                  → Root component — holds shared state & <Routes>
 │   └── index.js                 → Entry point, renders <App> inside <Router>
 │
-├── .env                          → (optional) environment variables
+├── .env                          → environment variables
 ├── package.json
 └── README.md
 ```
@@ -414,7 +416,7 @@ graph LR
   Routes --> Sent[Sent Page]
 ```
 
-**Draft → Send workflow:** a draft is saved to shared state, appears on the Drafts page, and moves to Sent once the user clicks Send from the Compose form. _(Add a rendered diagram or screenshot here if you'd like one included.)_
+**Draft → Send workflow:** a draft is saved to shared state, appears on the Drafts page, and moves to Sent once the user clicks Send from the Compose form.
 
 ---
 
@@ -461,8 +463,6 @@ yarn install
 | `npm test`       | Runs the test suite _(if tests are added)_                         |
 | `npm run build`  | Builds an optimized production bundle                              |
 
-_(Adjust commands if you use Yarn or custom scripts.)_
-
 ### Usage
 
 1. Run `npm start` and open `http://localhost:3000` — the **Inbox** loads by default
@@ -472,7 +472,7 @@ _(Adjust commands if you use Yarn or custom scripts.)_
 5. Click **Save Draft** to store it without sending — it appears in the **Drafts** list with a "Draft" tag
 6. Click a draft to re-open it in Compose, pre-filled for editing
 7. Click **Send** to move the email to **Sent** and remove it from **Drafts**
-8. Use the search field in the navbar to filter inbox items _(if implemented)_
+8. Use the search field in the navbar to filter inbox items
 
 ---
 
