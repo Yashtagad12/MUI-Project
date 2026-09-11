@@ -22,18 +22,18 @@ describe('Sidebar Component', () => {
         );
 
         // Check all link labels exist
-        expect(screen.getByText(/Inbox/i)).toBeInTheDocument();
-        expect(screen.getByText(/Starred/i)).toBeInTheDocument();
-        expect(screen.getByText(/Drafts/i)).toBeInTheDocument();
-        expect(screen.getByText(/Sent/i)).toBeInTheDocument();
-        expect(screen.getByText(/Trash/i)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Inbox/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Starred/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Drafts/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Sent/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Trash/i })).toBeInTheDocument();
 
         // Click the "Starred" link and check navigation
-        fireEvent.click(screen.getByText(/Starred/));
+        fireEvent.click(screen.getByRole('link', { name: /Starred/i }));
         expect(screen.getByText(/Starred Page/)).toBeInTheDocument();
 
         // Click the "Drafts" link and check navigation
-        fireEvent.click(screen.getByText(/Drafts/));
+        fireEvent.click(screen.getByRole('link', { name: /Drafts/i }));
         expect(screen.getByText(/Drafts Page/)).toBeInTheDocument();
     });
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { emails } from '../Data/emails';
 import { List, Typography } from '@mui/material';
 import EmailListItem from '../Components/EmailListItem';

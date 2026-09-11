@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { ListItem, ListItemAvatar, ListItemText, Avatar, ListItemButton } from '@mui/material';
 
 
@@ -24,9 +24,9 @@ const EmailListItem = ({ email, onClick }) => {
                 <ListItemText
                     primary={email.subject}
                     secondary={
-                        <React.Fragment>
+                        <Fragment>
                             {email.from} — {email.body.slice(0, 50)}…
-                        </React.Fragment>
+                        </Fragment>
                     }
                 />
             </ListItemButton>

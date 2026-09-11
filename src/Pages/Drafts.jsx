@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import {
     Box,
     Typography,
@@ -81,7 +81,7 @@ export default function Drafts({ drafts, onOpenDraft }) {
 
                         {drafts.map((draft, index) => (
 
-                            <React.Fragment key={draft.id}>
+                            <Fragment key={draft.id}>
 
                                 <ListItem disablePadding>
 
@@ -149,7 +149,7 @@ export default function Drafts({ drafts, onOpenDraft }) {
                                     <Divider />
                                 )}
 
-                            </React.Fragment>
+                            </Fragment>
 
                         ))}
 

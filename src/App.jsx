@@ -1,7 +1,5 @@
 import React from 'react';
 import './App.css'
-import Navbar from './Components/Navbar';
-import Sidebar from './Components/Sidebar';
 import { Route, Routes } from 'react-router';
 import MainLayout from './Layouts/MainLayout';
 import Inbox from './Pages/Inbox';
@@ -26,9 +24,9 @@ const App = () => {
 
   const saveDraft = (email) => {
     setDrafts((previousDrafts) => {
-
+      const draft = email.id === null ? { ...email, id: Date.now() } : email;
       const alreadyExists = previousDrafts.some(
-        (draft) => draft.id === email.id
+        (existingDraft) => existingDraft.id === draft.id
       );
 
       if (alreadyExists) {
@@ -37,7 +35,7 @@ const App = () => {
         );
       }
 
-      return [...previousDrafts, email];
+      return [...previousDrafts, draft];
     });
   };
 
@@ -72,11 +70,18 @@ const App = () => {
 
   return (
     <>
-      <MainLayout open={sidebarOpen} onMenuClick={() => setSidebarOpen(true)} onSidebarClose={() => setSidebarOpen(false)} >
+      <MainLayout
+        open={sidebarOpen}
+        onMenuClick={() => setSidebarOpen(true)}
+        onSidebarClose={() => setSidebarOpen(false)}
+        unreadCount={unreadCount}
+        draftCount={draftCount}
+        starredCount={starredCount}
+      >
         <Routes>
           <Route path="/" element={<Inbox />} />
           <Route path="/inbox" element={<Inbox />} />
-          <Route path="/sent" element={<Sent />} />
+          <Route path="/sent" element={<Sent sentEmails={sentEmails} />} />
           <Route path="/starred" element={<Starred />} />
           <Route path="/trash" element={<Trash />} />
           <Route path="/compose" element={<Compose open={composeOpen} onClose={() => setComposeOpen(false)} onSaveDraft={saveDraft} onSend={sendEmail} draft={selectedDraft} />} />

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Drafts from '../components/Drafts';
+import Drafts from '../Pages/Drafts';
 import { describe, it, expect, vi } from 'vitest';
 
 

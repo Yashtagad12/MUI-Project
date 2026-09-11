@@ -1,23 +1,18 @@
 import React from 'react';
 import { Box, TextField, Button } from '@mui/material';
-import { emails } from '../Data/emails';
+import { useNavigate } from 'react-router-dom';
 
 
 const Compose = ({ onSaveDraft, onSend, draft }) => {
-
+    const navigate = useNavigate();
 
     const [email, setEmail] = React.useState({
-        id: Date.now(),
+        id: draft?.id ?? null,
         to: '',
         subject: '',
         body: '',
+        ...draft,
     });
-
-    React.useEffect(() => {
-        if (draft) {
-            setEmail(draft);
-        }
-    }, [draft]);
 
     const handleChange = (event) => {
 
@@ -30,8 +25,7 @@ const Compose = ({ onSaveDraft, onSend, draft }) => {
     };
 
     const handleSend = () => {
-        // Here you would typically send the email data to your backend or API
-        console.log('Sending email:', { to, subject, body });
+        onSend(email);
         navigate('/sent'); // Navigate to the Sent page after sending
     };
 
@@ -46,7 +40,11 @@ const Compose = ({ onSaveDraft, onSend, draft }) => {
                 sx={{ mb: 2 }}
             />
             <TextField
-                fullWidth label="Subject" value={email.subject} onChange={handleChange}
+                fullWidth
+                label="Subject"
+                name="subject"
+                value={email.subject}
+                onChange={handleChange}
                 sx={{ mb: 2 }}
             />
             <TextField
@@ -65,7 +63,7 @@ const Compose = ({ onSaveDraft, onSend, draft }) => {
                 >
                     Save Draft
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => onSend(email)}>
+                <Button variant="contained" color="primary" onClick={handleSend}>
                     Send
                 </Button>
             </Box>

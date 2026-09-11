@@ -1,5 +1,4 @@
 // src/Components/Sidebar.jsx
-import React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -8,18 +7,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { Link as RouterLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 // Import Material Icons
 import AddIcon from '@mui/icons-material/Add';
 import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import SendIcon from '@mui/icons-material/Send';
-import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
-import MailIcon from '@mui/icons-material/Mail'; // for fallback icon
 
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
