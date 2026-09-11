@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProviders } from '../test-utils/renderWithProviders';
-import MainLayout from '../Components/MainLayout';
+import MainLayout from '../Layouts/MainLayout';
 
 
 
@@ -10,7 +10,11 @@ function setScreenWidth(isMobile) {
         writable: true,
         value: (query) => ({
             matches: isMobile,
-            addlistner: () => { },
+            media: query,
+            onchange: null,
+            addEventListener: () => { },
+            removeEventListener: () => { },
+            addListener: () => { },
             removeListener: () => { },
         }),
     });

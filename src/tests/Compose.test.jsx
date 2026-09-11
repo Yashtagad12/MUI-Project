@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Compose from '../components/Compose';
+import Compose from '../Pages/Compose';
 import { describe, it, expect, vi } from 'vitest';
 
 const mockedNaviagte = vi.fn();

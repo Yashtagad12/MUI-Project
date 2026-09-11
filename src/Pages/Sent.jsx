@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { emails } from '../Data/emails';
 import { List, Typography } from '@mui/material';
 import EmailListItem from '../Components/EmailListItem';
@@ -8,8 +8,8 @@ import PaginationComp from '../Components/PaginationComponent';
 
 
 
-const Sent = ({ searchTerm }) => {
-    const sentEmails = emails.filter(email => email.folder === 'sent');
+const Sent = ({ searchTerm, sentEmails: userSentEmails }) => {
+    const sentEmails = userSentEmails ?? emails.filter(email => email.folder === 'sent');
 
 
     const [page, setPage] = useState(1);
