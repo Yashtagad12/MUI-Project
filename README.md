@@ -4,7 +4,7 @@
 
 **A full-featured email client UI built with React and Material-UI (MUI)**
 
-[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![Material UI](https://img.shields.io/badge/MUI-v6%2Fv7-007FFF?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)
 [![React Router](https://img.shields.io/badge/React_Router-v6-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](#-license)
@@ -27,7 +27,7 @@
 - [Getting Started](#-getting-started)
 - [Available Scripts](#-available-scripts)
 - [Code Style](#-code-style)
-- [Testing](#-testing)
+- [Testing (Vitest + RTL)](#-testing-vitest--rtl)
 - [Deployment](#-deployment)
 - [Future Enhancements](#-future-enhancements)
 - [Contributing](#-contributing)
@@ -455,13 +455,14 @@ yarn install
 
 ## 📜 Available Scripts
 
-| Script           | Description                                                        |
-| ---------------- | ------------------------------------------------------------------ |
-| `npm start`      | Starts the development server (`http://localhost:3000` by default) |
-| `npm run lint`   | Lints the codebase with ESLint _(if configured)_                   |
-| `npm run format` | Formats the codebase with Prettier _(if configured)_               |
-| `npm test`       | Runs the test suite _(if tests are added)_                         |
-| `npm run build`  | Builds an optimized production bundle                              |
+| Script               | Description                                                        |
+| -------------------- | ------------------------------------------------------------------ |
+| `npm start`          | Starts the development server (`http://localhost:3000` by default) |
+| `npm run lint`       | Lints the codebase with ESLint _(if configured)_                   |
+| `npm run format`     | Formats the codebase with Prettier _(if configured)_               |
+| `npm test`           | Runs the Vitest test suite once (`vitest run --coverage`)          |
+| `npm run test:watch` | Runs Vitest in interactive watch mode                              |
+| `npm run build`      | Builds an optimized production bundle                              |
 
 ### Usage
 
@@ -488,15 +489,393 @@ yarn install
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing (Vitest + RTL)
 
-- Component and integration tests are encouraged via **React Testing Library** using **Vitest**
-- Suggested coverage: saving a draft updates `Drafts.jsx`, sending an email moves it to `Sent.jsx`, routing works correctly via `MemoryRouter`
-- Run tests with:
+MyMail MUI is tested with **Vitest** (a Vite-native test runner) alongside **React Testing Library (RTL)**, run in a **jsdom** browser-like environment.
+
+### Install dependencies
 
 ```bash
-npm test
+npm install -D vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
 ```
+
+Add test scripts to `package.json`:
+
+```json
+// package.json
+{
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
+  }
+}
+```
+
+### Configure Vitest
+
+Enable globals, set the DOM environment, and point to a setup file in `vite.config.js` (or `vitest.config.ts`):
+
+```javascript
+// vite.config.ts or vitest.config.ts
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true, // use describe/it/expect without imports
+    environment: "jsdom", // browser-like DOM environment
+    setupFiles: "./src/test-setup.js", // global setup (jest-dom, cleanup, etc.)
+  },
+});
+```
+
+### Global setup file
+
+Create `src/test-setup.js` to import RTL's cleanup and jest-dom's custom matchers:
+
+```javascript
+// src/test-setup.js
+import "@testing-library/jest-dom"; // adds custom matchers like toBeInTheDocument
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+
+afterEach(() => {
+  cleanup(); // automatically unmounts React trees after each test
+});
+```
+
+### Test folder structure
+
+Tests live alongside the code under test, inside `__tests__` folders:
+
+```
+src/
+├── components/
+│   ├── Navbar.jsx
+│   ├── Sidebar.jsx
+│   └── __tests__/
+│       ├── Navbar.test.jsx
+│       └── Sidebar.test.jsx
+├── pages/
+│   ├── Compose.jsx
+│   ├── Drafts.jsx
+│   └── __tests__/
+│       ├── Compose.test.jsx
+│       └── Drafts.test.jsx
+├── layouts/
+│   └── MainLayout.jsx
+│   └── __tests__/
+│       └── MainLayout.test.jsx
+└── test-utils.js
+```
+
+Scaffold it with:
+
+```bash
+mkdir -p src/components/__tests__ src/pages/__tests__ src/layouts/__tests__
+touch src/test-utils.js \
+      src/pages/__tests__/Compose.test.jsx \
+      src/pages/__tests__/Drafts.test.jsx \
+      src/components/__tests__/Navbar.test.jsx \
+      src/components/__tests__/Sidebar.test.jsx \
+      src/layouts/__tests__/MainLayout.test.jsx
+```
+
+### `test-utils.js` helper
+
+A custom `render` that wraps every component under test with React Router and MUI's `ThemeProvider`, so tests don't need to repeat that boilerplate:
+
+```jsx
+// src/test-utils.js
+import React from "react";
+import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const AllProviders = ({ children }) => (
+  <ThemeProvider theme={createTheme()}>
+    <MemoryRouter>{children}</MemoryRouter>
+  </ThemeProvider>
+);
+
+const customRender = (ui, options) =>
+  render(ui, { wrapper: AllProviders, ...options });
+
+// re-export everything from RTL, but override render
+export * from "@testing-library/react";
+export { customRender as render };
+```
+
+Import `{ render, screen, userEvent }` from `../test-utils` in tests rather than directly from RTL.
+
+### Example test — `Compose.jsx`
+
+Asserts `onSaveDraft` / `onSend` are called with the right email object:
+
+```jsx
+// src/pages/__tests__/Compose.test.jsx
+import React from "react";
+import Compose from "../Compose";
+import { render, screen } from "../../test-utils";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+
+test("Compose: Save Draft and Send call props with input data", async () => {
+  const saveDraft = vi.fn();
+  const sendEmail = vi.fn();
+  render(<Compose onSaveDraft={saveDraft} onSend={sendEmail} draft={null} />);
+
+  await userEvent.type(screen.getByLabelText(/to/i), "test@example.com");
+  await userEvent.type(screen.getByLabelText(/subject/i), "Hello");
+  await userEvent.type(screen.getByLabelText(/body/i), "This is a test.");
+
+  userEvent.click(screen.getByRole("button", { name: /save draft/i }));
+  expect(saveDraft).toHaveBeenCalledWith(
+    expect.objectContaining({
+      to: "test@example.com",
+      subject: "Hello",
+      body: "This is a test.",
+    }),
+  );
+
+  userEvent.click(screen.getByRole("button", { name: /send/i }));
+  expect(sendEmail).toHaveBeenCalledWith(
+    expect.objectContaining({
+      to: "test@example.com",
+      subject: "Hello",
+      body: "This is a test.",
+    }),
+  );
+});
+```
+
+### Example test — `Drafts.jsx`
+
+Confirms drafts render correctly and clicking one calls `onOpenDraft`:
+
+```jsx
+// src/pages/__tests__/Drafts.test.jsx
+import React from "react";
+import Drafts from "../Drafts";
+import { render, screen } from "../../test-utils";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+
+test("Drafts: displays list and handles click", () => {
+  const draftsData = [
+    { id: 1, to: "a@example.com", subject: "Subj", body: "Body text" },
+  ];
+  const openDraft = vi.fn();
+  render(<Drafts drafts={draftsData} onOpenDraft={openDraft} />);
+
+  expect(screen.getByText("Subj")).toBeInTheDocument();
+  expect(screen.getByText(/body text/i)).toBeInTheDocument();
+
+  userEvent.click(screen.getByText("Subj"));
+  expect(openDraft).toHaveBeenCalledWith(draftsData[0]);
+});
+```
+
+### Example test — `Navbar.jsx`
+
+Checks badge counts and hamburger visibility across breakpoints:
+
+```jsx
+// src/components/__tests__/Navbar.test.jsx
+import React from "react";
+import Navbar from "../Navbar";
+import { render, screen } from "../../test-utils";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+
+test("Navbar: hamburger hidden on desktop and visible on mobile", () => {
+  const onMenuClick = vi.fn();
+
+  render(
+    <Navbar
+      onMenuClick={onMenuClick}
+      onSearch={() => {}}
+      unreadCount={0}
+      draftCount={0}
+      starredCount={0}
+      isMobile={false}
+    />,
+  );
+  expect(screen.queryByLabelText(/open drawer/i)).toBeNull();
+
+  render(
+    <Navbar
+      onMenuClick={onMenuClick}
+      onSearch={() => {}}
+      unreadCount={0}
+      draftCount={0}
+      starredCount={0}
+      isMobile={true}
+    />,
+  );
+  const menuBtn = screen.getByLabelText(/open drawer/i);
+  expect(menuBtn).toBeInTheDocument();
+
+  userEvent.click(menuBtn);
+  expect(onMenuClick).toHaveBeenCalled();
+});
+
+test("Navbar: badge counts show correctly", () => {
+  render(
+    <Navbar
+      onMenuClick={() => {}}
+      onSearch={() => {}}
+      unreadCount={3}
+      draftCount={2}
+      starredCount={5}
+      isMobile={false}
+    />,
+  );
+  expect(screen.getByText("3")).toBeInTheDocument();
+  expect(screen.getByText("2")).toBeInTheDocument();
+  expect(screen.getByText("5")).toBeInTheDocument();
+});
+```
+
+### Example test — `Sidebar.jsx`
+
+Verifies nav links render and `onClose` fires in temporary mode:
+
+```jsx
+// src/components/__tests__/Sidebar.test.jsx
+import React from "react";
+import Sidebar from "../Sidebar";
+import { render, screen } from "../../test-utils";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+
+test("Sidebar: menu items render and close on temporary", () => {
+  const onClose = vi.fn();
+  render(<Sidebar open={true} onClose={onClose} variant="temporary" />);
+
+  expect(screen.getByText("Inbox")).toBeInTheDocument();
+  expect(screen.getByText("Starred")).toBeInTheDocument();
+  expect(screen.getByText("Drafts")).toBeInTheDocument();
+  expect(screen.getByText("Sent")).toBeInTheDocument();
+  expect(screen.getByText("Trash")).toBeInTheDocument();
+
+  userEvent.click(screen.getByText("Inbox"));
+  expect(onClose).toHaveBeenCalled();
+});
+```
+
+_(Relies on `MemoryRouter`, provided by `test-utils.js`, so `<Link>` works correctly.)_
+
+### Example test — `MainLayout.jsx`
+
+Confirms the layout renders the Navbar, Sidebar, and page children:
+
+```jsx
+// src/layouts/__tests__/MainLayout.test.jsx
+import React from "react";
+import MainLayout from "../MainLayout";
+import { render, screen } from "../../test-utils";
+
+test("MainLayout: shows Navbar and children", () => {
+  render(
+    <MainLayout
+      open={true}
+      onMenuClick={() => {}}
+      onSidebarClose={() => {}}
+      onSearch={() => {}}
+      unreadCount={1}
+      draftCount={0}
+      starredCount={2}
+    >
+      <div>Page Content</div>
+    </MainLayout>,
+  );
+
+  expect(screen.getByRole("banner")).toBeInTheDocument();
+  expect(screen.getByText("Page Content")).toBeInTheDocument();
+  expect(screen.getByText("Inbox")).toBeInTheDocument();
+});
+```
+
+_(Uses `getByRole('banner')` since MUI's `AppBar` exposes `role="banner"` — an accessibility-first query.)_
+
+### Running tests locally
+
+```bash
+npm test            # runs `vitest run` once
+npm run test:watch  # interactive watch mode
+npx vitest          # equivalent direct invocation
+
+# Coverage
+npm test -- --coverage
+```
+
+### Coverage configuration (optional)
+
+To enforce thresholds or scope which files are covered, add a `coverage` block in `vitest.config.ts`:
+
+```javascript
+// vitest.config.ts
+import { defineConfig } from "vitest/config";
+export default defineConfig({
+  test: {
+    coverage: {
+      enabled: true,
+      provider: "v8",
+      include: ["src/**/*.{js,jsx}"],
+      exclude: ["src/**/__tests__/**"],
+    },
+  },
+});
+```
+
+Run `vitest run --coverage` or `npm run coverage` (if that script is defined) to produce reports.
+
+### Continuous Integration
+
+A GitHub Actions workflow (`.github/workflows/test.yml`) runs the suite on every push and pull request:
+
+```yaml
+name: CI Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with: { node-version: "18" }
+      - run: npm ci
+      - run: npm test # or npm run test -- --coverage
+```
+
+### Mocking & advanced tips
+
+- `vi.fn()`, `vi.spyOn()`, and `vi.mock()` work like their Jest equivalents
+- Fake timers:
+  ```javascript
+  vi.useFakeTimers();
+  // ... schedule something
+  vi.advanceTimersByTime(1000);
+  ```
+- Stub HTTP or storage calls with `vi.mock('axios')` or `vi.spyOn(Storage.prototype, 'getItem')`
+- Always restore mocks between tests with `vi.restoreAllMocks()`
+
+### Testing MUI components
+
+Query through the DOM (roles/labels), not MUI's internal classes. For example, testing a hover-triggered tooltip:
+
+```jsx
+const button = screen.getByRole("button", { name: /info/i });
+await userEvent.hover(button);
+const tooltip = await screen.findByRole("tooltip");
+expect(tooltip).toBeInTheDocument();
+```
+
+This setup — Vitest + jsdom + a shared `test-utils` render wrapper + `user-event`-driven interaction tests — gives a fast, CI-friendly suite that exercises components the way a real user would.
 
 ---
 
@@ -520,7 +899,8 @@ This produces an optimized `/build` folder — serve it with any static host or 
 - [ ] Rich text formatting in Compose
 - [ ] Attachments support
 - [ ] Dark mode via MUI `<ThemeProvider>`
-- [ ] Automated test suite (React Testing Library / Jest)
+- [ ] Expand test coverage to Inbox, Sent, and Trash pages
+- [ ] Enforce coverage thresholds in CI
 
 ---
 
